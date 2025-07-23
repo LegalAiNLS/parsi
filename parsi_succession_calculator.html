@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parsi Intestate Succession Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border-bottom: 3px solid #667eea;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 24px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 50%;
+        }
+
+        .project-info {
+            flex: 1;
+        }
+
+        .project-info h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .project-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .detail-box {
+            background: rgba(102, 126, 234, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .detail-box h3 {
+            color: #667eea;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+
+        .team-members {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .member {
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .input-section, .result-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-section h2, .result-section h2 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .form-group select, .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e6ed;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group select:focus, .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .family-tree {
+            text-align: center;
+            padding: 20px;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .tree-node {
+            display: inline-block;
+            margin: 10px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            min-width: 120px;
+        }
+
+        .deceased {
+            border: 3px solid #e74c3c;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .heir {
+            border: 3px solid #27ae60;
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+        }
+
+        .tree-level {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .connection-line {
+            width: 2px;
+            height: 30px;
+            background: #667eea;
+            margin: 0 auto;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .results-table th, .results-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e6ed;
+        }
+
+        .results-table th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-weight: 600;
+        }
+
+        .results-table tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .section-reference {
+            background: rgba(102, 126, 234, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .section-reference h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .children-names {
+            margin-bottom: 15px;
+        }
+
+        .child-name-input {
+            margin-bottom: 10px;
+        }
+
+        .child-name-input input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 2px solid #e0e6ed;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .child-name-input label {
+            font-size: 14px;
+            color: #667eea;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+
+            .project-details {
+                grid-template-columns: 1fr;
+            }
+
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                <img src="logo.png" alt="Logo image">
+            </div>
+            <div class="project-info">
+                <h1>National Law School of India University</h1>
+				<h1>Understanding Heirship: Who should inherit</h1>
+                <div class="project-details">
+                    <div class="detail-box">
+                        <h3>Course:</h3>
+                        <p>Family Law 2 Group Project</p>
+                    </div>
+                    <div class="detail-box">
+                        <h3>Institution:</h3>
+                        <p>National Law School of India University (NLSIU), Bangalore</p>
+                    </div>
+                    <div class="detail-box">
+                        <h3>Project Guide:</h3>
+                        <p>Prof. Meenakshi Ramkumar, Assistant Professor of Law</p>
+                    </div>
+                    <div class="detail-box">
+                        <h3>👥 Team Members:</h3>
+                        <div class="team-members">
+                            <span class="member">Rakshit Dwaram</span>
+                            <span class="member">Dharmakeerthi</span>
+                            <span class="member">Sunil</span>
+                            <span class="member">Suhas</span>
+                            <span class="member">Sulekh</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="main-content">
+            <div class="input-section">
+                <h2>🏛️ Succession Calculator</h2>
+                <form id="successionForm">
+                    <div class="form-group">
+                        <label for="gender">Gender of Deceased Parsi:</label>
+                        <select id="gender" required>
+                            <option value="">Select Gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="deceasedName">Name of Deceased:</label>
+                        <input type="text" id="deceasedName" placeholder="Enter deceased person's name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Surviving Family Members:</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="spouse" name="family" value="spouse" onchange="toggleNameInput('spouse')">
+                                <label for="spouse">Spouse (Widow/Widower)</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="father" name="family" value="father" onchange="toggleNameInput('father')">
+                                <label for="father">Father</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="mother" name="family" value="mother" onchange="toggleNameInput('mother')">
+                                <label for="mother">Mother</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group hidden" id="spouseNameGroup">
+                        <label for="spouseName">Spouse Name:</label>
+                        <input type="text" id="spouseName" placeholder="Enter spouse's name">
+                    </div>
+
+                    <div class="form-group hidden" id="fatherNameGroup">
+                        <label for="fatherName">Father's Name:</label>
+                        <input type="text" id="fatherName" placeholder="Enter father's name">
+                    </div>
+
+                    <div class="form-group hidden" id="motherNameGroup">
+                        <label for="motherName">Mother's Name:</label>
+                        <input type="text" id="motherName" placeholder="Enter mother's name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sons">Number of Sons:</label>
+                        <input type="number" id="sons" min="0" max="10" value="0" onchange="generateChildInputs('sons')">
+                    </div>
+
+                    <div id="sonsNames" class="children-names"></div>
+
+                    <div class="form-group">
+                        <label for="daughters">Number of Daughters:</label>
+                        <input type="number" id="daughters" min="0" max="10" value="0" onchange="generateChildInputs('daughters')">
+                    </div>
+
+                    <div id="daughtersNames" class="children-names"></div>
+
+                    <div class="form-group">
+                        <label for="propertyValue">Total Property Value (₹):</label>
+                        <input type="number" id="propertyValue" min="1" step="0.01" placeholder="Enter property value">
+                    </div>
+
+                    <button type="button" class="calculate-btn" onclick="calculateSuccession()">
+                        Calculate Inheritance Shares
+                    </button>
+                </form>
+            </div>
+
+            <div class="result-section">
+                <h2>📊 Succession Results</h2>
+                <div id="results" class="hidden">
+                    <div class="family-tree" id="familyTree"></div>
+                    <table class="results-table" id="resultsTable">
+                        <thead>
+                            <tr>
+                                <th>Heir</th>
+                                <th>Share Ratio</th>
+                                <th>Amount (₹)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsBody"></tbody>
+                    </table>
+                    <div class="section-reference" id="sectionReference"></div>
+                </div>
+                <div id="placeholder" style="text-align: center; padding: 50px; color: #666;">
+                    Fill in the details and click calculate to see the inheritance distribution according to the Indian Succession Act, 1925.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleNameInput(type) {
+            const checkbox = document.getElementById(type);
+            const nameGroup = document.getElementById(type + 'NameGroup');
+            
+            if (checkbox.checked) {
+                nameGroup.classList.remove('hidden');
+            } else {
+                nameGroup.classList.add('hidden');
+                document.getElementById(type + 'Name').value = '';
+            }
+        }
+
+        function generateChildInputs(type) {
+            const count = parseInt(document.getElementById(type).value) || 0;
+            const container = document.getElementById(type + 'Names');
+            container.innerHTML = '';
+
+            for (let i = 1; i <= count; i++) {
+                const childInput = document.createElement('div');
+                childInput.className = 'child-name-input';
+                childInput.innerHTML = `
+                    <label for="${type}${i}Name">${type === 'sons' ? 'Son' : 'Daughter'} ${i} Name:</label>
+                    <input type="text" id="${type}${i}Name" placeholder="Enter ${type === 'sons' ? 'son' : 'daughter'}'s name">
+                `;
+                container.appendChild(childInput);
+            }
+        }
+
+        function calculateSuccession() {
+            const gender = document.getElementById('gender').value;
+            const deceasedName = document.getElementById('deceasedName').value.trim();
+            const hasSpouse = document.getElementById('spouse').checked;
+            const hasFather = document.getElementById('father').checked;
+            const hasMother = document.getElementById('mother').checked;
+            const sons = parseInt(document.getElementById('sons').value) || 0;
+            const daughters = parseInt(document.getElementById('daughters').value) || 0;
+            const propertyValue = parseFloat(document.getElementById('propertyValue').value) || 0;
+
+            if (!gender || !deceasedName || propertyValue <= 0) {
+                alert('Please fill all required fields including deceased name and valid property value.');
+                return;
+            }
+
+            // Collect names
+            const names = {
+                deceased: deceasedName,
+                spouse: hasSpouse ? document.getElementById('spouseName').value.trim() : '',
+                father: hasFather ? document.getElementById('fatherName').value.trim() : '',
+                mother: hasMother ? document.getElementById('motherName').value.trim() : '',
+                sons: [],
+                daughters: []
+            };
+
+            for (let i = 1; i <= sons; i++) {
+                const name = document.getElementById(`sons${i}Name`).value.trim();
+                names.sons.push(name || `Son ${i}`);
+            }
+
+            for (let i = 1; i <= daughters; i++) {
+                const name = document.getElementById(`daughters${i}Name`).value.trim();
+                names.daughters.push(name || `Daughter ${i}`);
+            }
+
+            const children = sons + daughters;
+            const hasChildren = children > 0;
+            const hasParents = hasFather || hasMother;
+
+            let shares = {};
+            let sectionUsed = '';
+            let explanation = '';
+
+            if (gender === 'male') {
+                if (hasSpouse && hasChildren) {
+                    // Male Parsi with widow and children
+                    if (hasParents) {
+                        sectionUsed = 'Section 51(1)(a) and 51(2)';
+                        explanation = 'Male Parsi leaving widow, children, and parents';
+                        
+                        // Each son = 2x daughter, widow = 2x daughter, father = 0.5x son, mother = 0.5x daughter
+                        let totalShares = (sons * 2) + daughters + 2 + (hasFather ? 1 : 0) + (hasMother ? 0.5 : 0);
+                        
+                        if (hasSpouse) shares[names.spouse || 'Widow'] = { ratio: '2x', amount: (2 / totalShares) * propertyValue };
+                        if (sons > 0) {
+                            names.sons.forEach((name, index) => {
+                                shares[name] = { ratio: '2x', amount: (2 / totalShares) * propertyValue };
+                            });
+                        }
+                        if (daughters > 0) {
+                            names.daughters.forEach((name, index) => {
+                                shares[name] = { ratio: '1x', amount: (1 / totalShares) * propertyValue };
+                            });
+                        }
+                        if (hasFather) shares[names.father || 'Father'] = { ratio: '0.5x', amount: (1 / totalShares) * propertyValue };
+                        if (hasMother) shares[names.mother || 'Mother'] = { ratio: '0.5x', amount: (0.5 / totalShares) * propertyValue };
+                    } else {
+                        sectionUsed = 'Section 51(1)(a)';
+                        explanation = 'Male Parsi leaving widow and children only';
+                        
+                        let totalShares = (sons * 2) + daughters + 2;
+                        
+                        if (hasSpouse) shares[names.spouse || 'Widow'] = { ratio: '2x', amount: (2 / totalShares) * propertyValue };
+                        if (sons > 0) {
+                            names.sons.forEach((name, index) => {
+                                shares[name] = { ratio: '2x', amount: (2 / totalShares) * propertyValue };
+                            });
+                        }
+                        if (daughters > 0) {
+                            names.daughters.forEach((name, index) => {
+                                shares[name] = { ratio: '1x', amount: (1 / totalShares) * propertyValue };
+                            });
+                        }
+                    }
+                } else if (hasChildren && !hasSpouse) {
+                    // Male Parsi with children but no widow
+                    if (hasParents) {
+                        sectionUsed = 'Section 51(1)(b) and 51(2)';
+                        explanation = 'Male Parsi leaving children and parents, but no widow';
+                        
+                        let totalShares = (sons * 2) + daughters + (hasFather ? 1 : 0) + (hasMother ? 0.5 : 0);
+                        
+                        if (sons > 0) {
+                            names.sons.forEach((name, index) => {
+                                shares[name] = { ratio: '2x', amount: (2 / totalShares) * propertyValue };
+                            });
+                        }
+                        if (daughters > 0) {
+                            names.daughters.forEach((name, index) => {
+                                shares[name] = { ratio: '1x', amount: (1 / totalShares) * propertyValue };
+                            });
+                        }
+                        if (hasFather) shares[names.father || 'Father'] = { ratio: '0.5x', amount: (1 / totalShares) * propertyValue };
+                        if (hasMother) shares[names.mother || 'Mother'] = { ratio: '0.5x', amount: (0.5 / totalShares) * propertyValue };
+                    } else {
+                        sectionUsed = 'Section 51(1)(b)';
+                        explanation = 'Male Parsi leaving children only';
+                        
+                        let totalShares = (sons * 2) + daughters;
+                        
+                        if (sons > 0) {
+                            names.sons.forEach((name, index) => {
+                                shares[name] = { ratio: '2x', amount: (2 / totalShares) * propertyValue };
+                            });
+                        }
+                        if (daughters > 0) {
+                            names.daughters.forEach((name, index) => {
+                                shares[name] = { ratio: '1x', amount: (1 / totalShares) * propertyValue };
+                            });
+                        }
+                    }
+                } else {
+                    // No lineal descendants - apply Section 54 and Schedule II
+                    sectionUsed = 'Section 54 and Schedule II, Part I';
+                    explanation = 'Male Parsi with no lineal descendants - property distributed among relatives';
+                    
+                    if (hasSpouse) {
+                        shares[names.spouse || 'Widow'] = { ratio: '1/2', amount: propertyValue * 0.5 };
+                        shares['Other Relatives'] = { ratio: '1/2', amount: propertyValue * 0.5 };
+                    } else if (hasParents) {
+                        if (hasFather && hasMother) {
+                            shares[names.father || 'Father'] = { ratio: '1/2', amount: propertyValue * 0.5 };
+                            shares[names.mother || 'Mother'] = { ratio: '1/2', amount: propertyValue * 0.5 };
+                        } else if (hasFather) {
+                            shares[names.father || 'Father'] = { ratio: '1', amount: propertyValue };
+                        } else {
+                            shares[names.mother || 'Mother'] = { ratio: '1', amount: propertyValue };
+                        }
+                    } else {
+                        shares['Other Relatives (Schedule II)'] = { ratio: '1', amount: propertyValue };
+                    }
+                }
+            } else { // Female
+                if (hasSpouse && hasChildren) {
+                    // Female Parsi with widower and children
+                    if (hasParents) {
+                        sectionUsed = 'Section 52(a) and 51(2)';
+                        explanation = 'Female Parsi leaving widower, children, and parents';
+                        
+                        // Equal shares for widower and each child, parents get half share each
+                        let totalShares = 1 + children + (hasFather ? 0.5 : 0) + (hasMother ? 0.5 : 0);
+                        
+                        if (hasSpouse) shares[names.spouse || 'Widower'] = { ratio: '1x', amount: (1 / totalShares) * propertyValue };
+                        if (sons > 0) {
+                            names.sons.forEach((name, index) => {
+                                shares[name] = { ratio: '1x', amount: (1 / totalShares) * propertyValue };
+                            });
+                        }
+                        if (daughters > 0) {
+                            names.daughters.forEach((name, index) => {
+                                shares[name] = { ratio: '1x', amount: (1 / totalShares) * propertyValue };
+                            });
+                        }
+                        if (hasFather) shares[names.father || 'Father'] = { ratio: '0.5x', amount: (0.5 / totalShares) * propertyValue };
+                        if (hasMother) shares[names.mother || 'Mother'] = { ratio: '0.5x', amount: (0.5 / totalShares) * propertyValue };
+                    } else {
+                        sectionUsed = 'Section 52(a)';
+                        explanation = 'Female Parsi leaving widower and children only';
+                        
+                        let totalShares = 1 + children;
+                        
+                        if (hasSpouse) shares[names.spouse || 'Widower'] = { ratio: '1x', amount: (1 / totalShares) * propertyValue };
+                        if (sons > 0) {
+                            names.sons.forEach((name, index) => {
+                                shares[name] = { ratio: '1x', amount: (1 / totalShares) * propertyValue };
+                            });
+                        }
+                        if (daughters > 0) {
+                            names.daughters.forEach((name, index) => {
+                                shares[name] = { ratio: '1x', amount: (1 / totalShares) * propertyValue };
+                            });
+                        }
+                    }
+                } else if (hasChildren && !hasSpouse) {
+                    // Female Parsi with children but no widower
+                    if (hasParents) {
+                        sectionUsed = 'Section 52(b) and 51(2)';
+                        explanation = 'Female Parsi leaving children and parents, but no widower';
+                        
+                        let totalShares = children + (hasFather ? 0.5 : 0) + (hasMother ? 0.5 : 0);
+                        
+                        if (sons > 0) {
+                            names.sons.forEach((name, index) => {
+                                shares[name] = { ratio: '1x', amount: (1 / totalShares) * propertyValue };
+                            });
+                        }
+                        if (daughters > 0) {
+                            names.daughters.forEach((name, index) => {
+                                shares[name] = { ratio: '1x', amount: (1 / totalShares) * propertyValue };
+                            });
+                        }
+                        if (hasFather) shares[names.father || 'Father'] = { ratio: '0.5x', amount: (0.5 / totalShares) * propertyValue };
+                        if (hasMother) shares[names.mother || 'Mother'] = { ratio: '0.5x', amount: (0.5 / totalShares) * propertyValue };
+                    } else {
+                        sectionUsed = 'Section 52(b)';
+                        explanation = 'Female Parsi leaving children only';
+                        
+                        let totalShares = children;
+                        
+                        if (sons > 0) {
+                            names.sons.forEach((name, index) => {
+                                shares[name] = { ratio: '1x', amount: (1 / totalShares) * propertyValue };
+                            });
+                        }
+                        if (daughters > 0) {
+                            names.daughters.forEach((name, index) => {
+                                shares[name] = { ratio: '1x', amount: (1 / totalShares) * propertyValue };
+                            });
+                        }
+                    }
+                } else {
+                    // No lineal descendants - apply Section 54 and Schedule II
+                    sectionUsed = 'Section 54 and Schedule II, Part I';
+                    explanation = 'Female Parsi with no lineal descendants - property distributed among relatives';
+                    
+                    if (hasSpouse) {
+                        shares[names.spouse || 'Widower'] = { ratio: '1/2', amount: propertyValue * 0.5 };
+                        shares['Other Relatives'] = { ratio: '1/2', amount: propertyValue * 0.5 };
+                    } else if (hasParents) {
+                        if (hasFather && hasMother) {
+                            shares[names.father || 'Father'] = { ratio: '1/2', amount: propertyValue * 0.5 };
+                            shares[names.mother || 'Mother'] = { ratio: '1/2', amount: propertyValue * 0.5 };
+                        } else if (hasFather) {
+                            shares[names.father || 'Father'] = { ratio: '1', amount: propertyValue };
+                        } else {
+                            shares[names.mother || 'Mother'] = { ratio: '1', amount: propertyValue };
+                        }
+                    } else {
+                        shares['Other Relatives (Schedule II)'] = { ratio: '1', amount: propertyValue };
+                    }
+                }
+            }
+
+            displayResults(shares, sectionUsed, explanation, names, gender, hasSpouse, hasFather, hasMother, sons, daughters);
+        }
+
+        function displayResults(shares, sectionUsed, explanation, names, gender, hasSpouse, hasFather, hasMother, sons, daughters) {
+            // Show results section
+            document.getElementById('placeholder').classList.add('hidden');
+            document.getElementById('results').classList.remove('hidden');
+
+            // Create family tree
+            createFamilyTree(names, gender, hasSpouse, hasFather, hasMother, sons, daughters);
+
+            // Populate results table
+            const tbody = document.getElementById('resultsBody');
+            tbody.innerHTML = '';
+
+            for (const [heir, data] of Object.entries(shares)) {
+                const row = tbody.insertRow();
+                row.insertCell(0).textContent = heir;
+                row.insertCell(1).textContent = data.ratio;
+                row.insertCell(2).textContent = `₹${data.amount.toLocaleString('en-IN', {maximumFractionDigits: 2})}`;
+            }
+
+            // Display section reference
+            const sectionRef = document.getElementById('sectionReference');
+            sectionRef.innerHTML = `
+                <h3>📚 Legal Reference</h3>
+                <p><strong>Section Applied:</strong> ${sectionUsed}</p>
+                <p><strong>Explanation:</strong> ${explanation}</p>
+                <p><em>As per the Indian Succession Act, 1925</em></p>
+            `;
+        }
+
+        function createFamilyTree(names, gender, hasSpouse, hasFather, hasMother, sons, daughters) {
+            const treeContainer = document.getElementById('familyTree');
+            treeContainer.innerHTML = '<h3>👨‍👩‍👧‍👦 Family Tree</h3>';
+
+            // Grandparents level
+            if (hasFather || hasMother) {
+                const grandparentsLevel = document.createElement('div');
+                grandparentsLevel.className = 'tree-level';
+                
+                if (hasFather) {
+                    const father = document.createElement('div');
+                    father.className = 'tree-node heir';
+                    father.innerHTML = `
+                        <div class="tree-name">${names.father || 'Father'}</div>
+                        <div class="tree-relation">Father ✓</div>
+                    `;
+                    grandparentsLevel.appendChild(father);
+                }
+                
+                if (hasMother) {
+                    const mother = document.createElement('div');
+                    mother.className = 'tree-node heir';
+                    mother.innerHTML = `
+                        <div class="tree-name">${names.mother || 'Mother'}</div>
+                        <div class="tree-relation">Mother ✓</div>
+                    `;
+                    grandparentsLevel.appendChild(mother);
+                }
+                
+                treeContainer.appendChild(grandparentsLevel);
+                
+                const connector1 = document.createElement('div');
+                connector1.className = 'connection-line';
+                treeContainer.appendChild(connector1);
+            }
+
+            // Parents level
+            const parentsLevel = document.createElement('div');
+            parentsLevel.className = 'tree-level';
+            
+            const deceased = document.createElement('div');
+            deceased.className = 'tree-node deceased';
+            deceased.innerHTML = `
+                <div class="tree-name">${names.deceased}</div>
+                <div class="tree-relation">Deceased ${gender === 'male' ? '♂' : '♀'}</div>
+            `;
+            parentsLevel.appendChild(deceased);
+            
+            if (hasSpouse) {
+                const spouse = document.createElement('div');
+                spouse.className = 'tree-node heir';
+                spouse.innerHTML = `
+                    <div class="tree-name">${names.spouse || (gender === 'male' ? 'Widow' : 'Widower')}</div>
+                    <div class="tree-relation">${gender === 'male' ? 'Widow' : 'Widower'} ✓</div>
+                `;
+                parentsLevel.appendChild(spouse);
+            }
+            
+            treeContainer.appendChild(parentsLevel);
+
+            // Children level
+            if (sons > 0 || daughters > 0) {
+                const connector2 = document.createElement('div');
+                connector2.className = 'connection-line';
+                treeContainer.appendChild(connector2);
+                
+                const childrenLevel = document.createElement('div');
+                childrenLevel.className = 'tree-level';
+                
+                names.sons.forEach((name, index) => {
+                    const son = document.createElement('div');
+                    son.className = 'tree-node heir';
+                    son.innerHTML = `
+                        <div class="tree-name">${name}</div>
+                        <div class="tree-relation">Son ✓</div>
+                    `;
+                    childrenLevel.appendChild(son);
+                });
+                
+                names.daughters.forEach((name, index) => {
+                    const daughter = document.createElement('div');
+                    daughter.className = 'tree-node heir';
+                    daughter.innerHTML = `
+                        <div class="tree-name">${name}</div>
+                        <div class="tree-relation">Daughter ✓</div>
+                    `;
+                    childrenLevel.appendChild(daughter);
+                });
+                
+                treeContainer.appendChild(childrenLevel);
+            }
+        }
+    </script> No lineal descendants - apply Section 54 and Schedule II
+                    sectionUsed = 'Section 54 and Schedule II, Part I';
+                    explanation = 'Male Parsi with no lineal descendants - property distributed among relatives';
+                    
+                    if (hasSpouse) {
+                        shares['Widow'] = { ratio: '1/2', amount: propertyValue * 0.5 };
+                        shares['Other Relatives'] = { ratio: '1/2', amount: propertyValue * 0.5 };
+                    } else if (hasParents) {
+                        if (hasFather && hasMother) {
+                            shares['Father'] = { ratio: '1/2', amount: propertyValue * 0.5 };
+                            shares['Mother'] = { ratio: '1/2', amount: propertyValue * 0.5 };
+                        } else if (hasFather) {
+                            shares['Father'] = { ratio: '1', amount: propertyValue };
+                        } else {
+                            shares['Mother'] = { ratio: '1', amount: propertyValue };
+                        }
+                    } else {
+                        shares['Other Relatives (Schedule II)'] = { ratio: '1', amount: propertyValue };
+                    }
+                }
+            } else { // Female
+                if (hasSpouse && hasChildren) {
+                    // Female Parsi with widower and children
+                    if (hasParents) {
+                        sectionUsed = 'Section 52(a) and 51(2)';
+                        explanation = 'Female Parsi leaving widower, children, and parents';
+                        
+                        // Equal shares for widower and each child, parents get half share each
+                        let totalShares = 1 + children + (hasFather ? 0.5 : 0) + (hasMother ? 0.5 : 0);
+                        
+                        shares['Widower'] = { ratio: '1x', amount: (1 / totalShares) * propertyValue };
+                        if (sons > 0) shares[`Sons (${sons})`] = { ratio: '1x each', amount: (sons / totalShares) * propertyValue };
+                        if (daughters > 0) shares[`Daughters (${daughters})`] = { ratio: '1x each', amount: (daughters / totalShares) * propertyValue };
+                        if (hasFather) shares['Father'] = { ratio: '0.5x', amount: (0.5 / totalShares) * propertyValue };
+                        if (hasMother) shares['Mother'] = { ratio: '0.5x', amount: (0.5 / totalShares) * propertyValue };
+                    } else {
+                        sectionUsed = 'Section 52(a)';
+                        explanation = 'Female Parsi leaving widower and children only';
+                        
+                        let totalShares = 1 + children;
+                        
+                        shares['Widower'] = { ratio: '1x', amount: (1 / totalShares) * propertyValue };
+                        if (sons > 0) shares[`Sons (${sons})`] = { ratio: '1x each', amount: (sons / totalShares) * propertyValue };
+                        if (daughters > 0) shares[`Daughters (${daughters})`] = { ratio: '1x each', amount: (daughters / totalShares) * propertyValue };
+                    }
+                } else if (hasChildren && !hasSpouse) {
+                    // Female Parsi with children but no widower
+                    if (hasParents) {
+                        sectionUsed = 'Section 52(b) and 51(2)';
+                        explanation = 'Female Parsi leaving children and parents, but no widower';
+                        
+                        let totalShares = children + (hasFather ? 0.5 : 0) + (hasMother ? 0.5 : 0);
+                        
+                        if (sons > 0) shares[`Sons (${sons})`] = { ratio: '1x each', amount: (sons / totalShares) * propertyValue };
+                        if (daughters > 0) shares[`Daughters (${daughters})`] = { ratio: '1x each', amount: (daughters / totalShares) * propertyValue };
+                        if (hasFather) shares['Father'] = { ratio: '0.5x', amount: (0.5 / totalShares) * propertyValue };
+                        if (hasMother) shares['Mother'] = { ratio: '0.5x', amount: (0.5 / totalShares) * propertyValue };
+                    } else {
+                        sectionUsed = 'Section 52(b)';
+                        explanation = 'Female Parsi leaving children only';
+                        
+                        if (sons > 0) shares[`Sons (${sons})`] = { ratio: '1x each', amount: (sons / totalShares) * propertyValue };
+                        if (daughters > 0) shares[`Daughters (${daughters})`] = { ratio: '1x each', amount: (daughters / totalShares) * propertyValue };
+                    }
+                } else {
+                    // No lineal descendants - apply Section 54 and Schedule II
+                    sectionUsed = 'Section 54 and Schedule II, Part I';
+                    explanation = 'Female Parsi with no lineal descendants - property distributed among relatives';
+                    
+                    if (hasSpouse) {
+                        shares['Widower'] = { ratio: '1/2', amount: propertyValue * 0.5 };
+                        shares['Other Relatives'] = { ratio: '1/2', amount: propertyValue * 0.5 };
+                    } else if (hasParents) {
+                        if (hasFather && hasMother) {
+                            shares['Father'] = { ratio: '1/2', amount: propertyValue * 0.5 };
+                            shares['Mother'] = { ratio: '1/2', amount: propertyValue * 0.5 };
+                        } else if (hasFather) {
+                            shares['Father'] = { ratio: '1', amount: propertyValue };
+                        } else {
+                            shares['Mother'] = { ratio: '1', amount: propertyValue };
+                        }
+                    } else {
+                        shares['Other Relatives (Schedule II)'] = { ratio: '1', amount: propertyValue };
+                    }
+                }
+            }
+
+            displayResults(shares, sectionUsed, explanation, gender, hasSpouse, hasFather, hasMother, sons, daughters);
+        }
+
+        function displayResults(shares, sectionUsed, explanation, gender, hasSpouse, hasFather, hasMother, sons, daughters) {
+            // Show results section
+            document.getElementById('placeholder').classList.add('hidden');
+            document.getElementById('results').classList.remove('hidden');
+
+            // Create family tree
+            createFamilyTree(gender, hasSpouse, hasFather, hasMother, sons, daughters);
+
+            // Populate results table
+            const tbody = document.getElementById('resultsBody');
+            tbody.innerHTML = '';
+
+            for (const [heir, data] of Object.entries(shares)) {
+                const row = tbody.insertRow();
+                row.insertCell(0).textContent = heir;
+                row.insertCell(1).textContent = data.ratio;
+                row.insertCell(2).textContent = `₹${data.amount.toLocaleString('en-IN', {maximumFractionDigits: 2})}`;
+            }
+
+            // Display section reference
+            const sectionRef = document.getElementById('sectionReference');
+            sectionRef.innerHTML = `
+                <h3>📚 Legal Reference</h3>
+                <p><strong>Section Applied:</strong> ${sectionUsed}</p>
+                <p><strong>Explanation:</strong> ${explanation}</p>
+                <p><em>As per the Indian Succession Act, 1925</em></p>
+            `;
+        }
+
+        function createFamilyTree(gender, hasSpouse, hasFather, hasMother, sons, daughters) {
+            const treeContainer = document.getElementById('familyTree');
+            treeContainer.innerHTML = '<h3>👨‍👩‍👧‍👦 Family Tree</h3>';
+
+            // Grandparents level
+            if (hasFather || hasMother) {
+                const grandparentsLevel = document.createElement('div');
+                grandparentsLevel.className = 'tree-level';
+                
+                if (hasFather) {
+                    const father = document.createElement('div');
+                    father.className = 'tree-node heir';
+                    father.textContent = 'Father ✓';
+                    grandparentsLevel.appendChild(father);
+                }
+                
+                if (hasMother) {
+                    const mother = document.createElement('div');
+                    mother.className = 'tree-node heir';
+                    mother.textContent = 'Mother ✓';
+                    grandparentsLevel.appendChild(mother);
+                }
+                
+                treeContainer.appendChild(grandparentsLevel);
+                
+                const connector1 = document.createElement('div');
+                connector1.className = 'connection-line';
+                treeContainer.appendChild(connector1);
+            }
+
+            // Parents level
+            const parentsLevel = document.createElement('div');
+            parentsLevel.className = 'tree-level';
+            
+            const deceased = document.createElement('div');
+            deceased.className = 'tree-node deceased';
+            deceased.textContent = `Deceased ${gender === 'male' ? '♂' : '♀'}`;
+            parentsLevel.appendChild(deceased);
+            
+            if (hasSpouse) {
+                const spouse = document.createElement('div');
+                spouse.className = 'tree-node heir';
+                spouse.textContent = `${gender === 'male' ? 'Widow' : 'Widower'} ✓`;
+                parentsLevel.appendChild(spouse);
+            }
+            
+            treeContainer.appendChild(parentsLevel);
+
+            // Children level
+            if (sons > 0 || daughters > 0) {
+                const connector2 = document.createElement('div');
+                connector2.className = 'connection-line';
+                treeContainer.appendChild(connector2);
+                
+                const childrenLevel = document.createElement('div');
+                childrenLevel.className = 'tree-level';
+                
+                for (let i = 0; i < sons; i++) {
+                    const son = document.createElement('div');
+                    son.className = 'tree-node heir';
+                    son.textContent = `Son ${i + 1} ✓`;
+                    childrenLevel.appendChild(son);
+                }
+                
+                for (let i = 0; i < daughters; i++) {
+                    const daughter = document.createElement('div');
+                    daughter.className = 'tree-node heir';
+                    daughter.textContent = `Daughter ${i + 1} ✓`;
+                    childrenLevel.appendChild(daughter);
+                }
+                
+                treeContainer.appendChild(childrenLevel);
+            }
+        }
+    </script>
+</body>
+</html>
